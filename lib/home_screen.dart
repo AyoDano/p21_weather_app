@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:p21_weather_app/weather_service.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -25,16 +26,42 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const Text(
+              style: TextStyle(fontSize: 25),
+              textAlign: TextAlign.center,
+              'Das aktuelle Wetter ist:',
+            ),
+
             Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: const Text(
-                textAlign: TextAlign.center,
-                'Shut the door not that it lets in the cold but that it lets out the coziness. - Mark Twain',
+              padding: const EdgeInsets.only(top: 30),
+              child: FilledButton(
+                onPressed: () {},
+                child: Text('Wetter Aktualisieren'),
               ),
             ),
-            TextButton(onPressed: () {}, child: Text('Drück Mich')),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<Widget> showCurrentWeather() async {
+    final Map<String, dynamic> weatherDataMap =
+        await WeatherService.fetchWeather();
+    return ListTile(
+      title: Text(
+        '${weatherDataMap["temperature"]} °C',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 30,
+          color: const Color.fromARGB(255, 54, 104, 127),
+        ),
+      ),
+      subtitle: Text(
+        "Humidity: ${weatherDataMap["humidity"]} %",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
     );
   }
