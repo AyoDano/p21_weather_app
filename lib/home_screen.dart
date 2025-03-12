@@ -11,6 +11,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Widget weatherData = Text("Daten müssen aktualisiert werden!");
+
+  Future<Widget> showCurrentWeather() async {
+    final Map<String, dynamic> weatherDataMap =
+        await WeatherService.fetchWeather();
+    return ListTile(
+      title: Text(
+        '${weatherDataMap["temperature"]} °C',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 30,
+          color: const Color.fromARGB(255, 54, 104, 127),
+        ),
+      ),
+      subtitle: Text(
+        "Humidity: ${weatherDataMap["humidity"]} %",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,37 +54,20 @@ class _MyHomePageState extends State<MyHomePage> {
               textAlign: TextAlign.center,
               'Das aktuelle Wetter ist:',
             ),
-
+            // Wenn weatherData nicht null ist, gibt es mir die Daten aus
+            weatherData,
             Padding(
               padding: const EdgeInsets.only(top: 30),
               child: FilledButton(
-                onPressed: () {},
+                onPressed: () async {
+                  weatherData = await showCurrentWeather();
+                  setState(() {});
+                },
                 child: Text('Wetter Aktualisieren'),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Future<Widget> showCurrentWeather() async {
-    final Map<String, dynamic> weatherDataMap =
-        await WeatherService.fetchWeather();
-    return ListTile(
-      title: Text(
-        '${weatherDataMap["temperature"]} °C',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
-          color: const Color.fromARGB(255, 54, 104, 127),
-        ),
-      ),
-      subtitle: Text(
-        "Humidity: ${weatherDataMap["humidity"]} %",
-        textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
     );
   }
